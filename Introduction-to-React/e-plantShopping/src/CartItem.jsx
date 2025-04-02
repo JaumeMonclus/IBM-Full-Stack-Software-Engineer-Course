@@ -2,40 +2,67 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeItem, updateQuantity } from './CartSlice';
 import './CartItem.css';
-import { addItem, removeItem, updateQuantity } from './CartSlice';
+// import { addItem, removeItem, updateQuantity } from './CartSlice';
 
 const CartItem = ({ onContinueShopping }) => {
   const cart = useSelector(state => state.cart.items);
   const dispatch = useDispatch();
 
+  console.log("Cart items:", cart);
+
+
   // Calculate total amount for all products in the cart
-  const calculateTotalAmount = () => {
- 
+  const calculateTotalAmount = (item) => {
+    let total = 0;
+    cart.forEach((item) => {
+      const itemQuant = item.quantity;
+      const itemCost = parseFloat(item.cost.substring(1)); // elimina el símbolo "$"
+      const itemTotalCost = itemQuant * itemCost;
+      total += itemTotalCost;
+    });
+    return total;
   };
-
+  
   const handleContinueShopping = (e) => {
-   
+        onContinueShopping(e);
   };
-
-
+  const handleCheckoutShopping = (e) => {
+    alert('Functionality to be added for future reference');
+  };
 
   const handleIncrement = (item) => {
+    dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
   };
+  
 
   const handleDecrement = (item) => {
-   
+    dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 }));
   };
 
   const handleRemove = (item) => {
+    dispatch(removeItem({name: item.name}))
   };
 
   // Calculate total cost based on quantity for an item
   const calculateTotalCost = (item) => {
+    let total = 0;
+    cart.forEach((item) => {
+      const itemQuant = item.quantity;
+      const itemCost = parseFloat(item.cost.substring(1)); // elimina el símbolo "$"
+      const itemTotalCost = itemQuant * itemCost;
+      total += itemTotalCost;
+    });
+    return total;
+
   };
+
+
 
   return (
     <div className="cart-container">
       <h2 style={{ color: 'black' }}>Total Cart Amount: ${calculateTotalAmount()}</h2>
+      
+
       <div>
         {cart.map(item => (
           <div className="cart-item" key={item.name}>
